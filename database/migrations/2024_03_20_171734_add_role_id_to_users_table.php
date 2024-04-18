@@ -15,6 +15,8 @@ return new class extends Migration
             //
             $table->integer('role_id')->unsigned()->after('password');
             $table->foreign('role_id')->references('id')->on('roles');
+            //Indexing
+            $table->index('role_id');
         });
     }
 

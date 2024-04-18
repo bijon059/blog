@@ -21,6 +21,9 @@ return new class extends Migration
             $table->integer('replied_by')->unsigned();
             $table->foreign('replied_by')->references('id')->on('users')->cascadeOnDelete();
             $table->timestamps();
+            //Indexing
+            $table->index('post_id');
+            $table->index('comment_id');
         });
     }
 

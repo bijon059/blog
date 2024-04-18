@@ -24,6 +24,9 @@ return new class extends Migration
             $table->unsignedInteger('reply_id')->nullable();
             $table->foreign('reply_id')->references('id')->on('replies')->cascadeOnDelete();
             $table->timestamps();
+            //Indexing
+            $table->index('uploaded_by');
+            $table->index('post_id');
         });
     }
 

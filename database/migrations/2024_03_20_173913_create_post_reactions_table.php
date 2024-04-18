@@ -20,6 +20,10 @@ return new class extends Migration
             $table->integer('reaction_id')->unsigned();
             $table->foreign('reaction_id')->references('id')->on('reactions')->cascadeOnDelete();
             $table->timestamps();
+
+            //Indexing
+            $table->index('post_id');
+            $table->index('reacted_by');
         });
     }
 

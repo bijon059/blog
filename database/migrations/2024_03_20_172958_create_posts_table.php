@@ -18,6 +18,9 @@ return new class extends Migration
             $table->integer('created_by')->unsigned();
             $table->foreign('created_by')->references('id')->on('users')->cascadeOnDelete();
             $table->timestamps();
+
+            //Indexing
+            $table->index('title');
         });
     }
 
