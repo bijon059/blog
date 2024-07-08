@@ -3,6 +3,8 @@
 use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\PostController as Posts;
+use App\Http\Controllers\Api\AuthController as Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('post/list',[PostController::class,'getPostsApi']);
+Route::get("auth/list", [Auth::class, "getPostsApi"]);
+Route::post('auth/register',[Auth::class,'register']);
+Route::post('auth/login',[Auth::class,'login']);
+Route::resource('posts',Posts::class);
