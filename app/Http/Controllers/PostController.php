@@ -4,6 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use Illuminate\Validation\ValidationException;
+use library\libs\ApiResponse;
+
+use function Laravel\Prompts\error;
+
+//use Library\libs\ApiResponse;
+
 class PostController extends Controller
 {
     //
@@ -19,18 +26,7 @@ class PostController extends Controller
             "name"=>"Bijon",
             "content"=>"Etc and more"
         );
-
-        return json_encode($data);
-    }
-    public function register(Request $request)
-    {
-        $payload = $request->validate([
-            "first_name"=>"required|min:2|max:60",
-            "username"=>"required|min:5|unique:users,username",
-            "email"=>"required|email|unique:email,email",
-            "password"=>"required|min:4|max:50|confirmed",
-        ]);
-        $payload["role_id"]=1;
-        return response()->json(["message"=>"Successfully Created","data"=>$payload],200);
+        $response = new  ApiResponse();
+        return $response->displayWithResponse(true,$data,200);
     }
 }

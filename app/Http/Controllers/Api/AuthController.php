@@ -31,10 +31,10 @@ class AuthController extends Controller
             Log::info($e->getMessage());
             return response()->json(["message"=>$e->getMessage()],500);
         }
-
     }
     public function login(Request $request)
     {
+        // token 3|fKFRYe3hbodJQrL9LlpIWGPJBL1BXflrHtdLykpZ48c9e627
         $payload = $request->validate([
             "email"=>"required|email",
             "password"=>"required",
@@ -58,6 +58,18 @@ class AuthController extends Controller
         }catch(\Exception $e)
         {
             Log::info($e->getMessage());
+            return response()->json(["message"=>$e->getMessage()],500);
+        }
+    }
+
+    public function logout(Request $request)
+    {
+        try{
+            $request->user()->currentAccessToken()->delete();
+            return response()->json(["status"=>200,"message"=>"Logout succesfully"],200);
+        }catch(\Exception $e)
+        {
+            Log::error(["error"=>$e->getMessage()]);
             return response()->json(["message"=>$e->getMessage()],500);
         }
     }

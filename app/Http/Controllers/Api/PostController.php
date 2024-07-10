@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\File;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use library\libs\ApiResponse;
 
 class PostController extends Controller
 {
@@ -40,21 +42,40 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //return response()->json(["message"=>"Successfully Created","data"=>$request->all()],200);
-//        try {
-            $payload = $request->validate([
-                'title'=>'required|min:5|max:20',
-                'content'=>'required|min:10'
-            ]);
-//        }catch (\Illuminate\Validation\ValidationException $th){
-//            return $th->validator->errors();
-//        }
-
-        return response()->json(["message"=>"Successfully Created","data"=>$payload],200);
+        $payload = $request->validate([
+            'title'=>'required|min:5|max:150',
+            'short_description'=>'required|min:5|max:255',
+            'content'=>'required|min:10',
+            'media' => 'required',
+            'media.*' => 'mimes:jpeg,jpg,png|max:4000',
+        ]);
         $payload['created_by'] = 1;
         try {
+            $response = new ApiResponse();
             $post = Post::create($payload);
-            return response()->json(["message"=>"Successfully Created","data"=>$post],200);
+            if(!empty($post->id))
+            {
+                if($files = $payload['media'])
+                {   $i=0;
+                    foreach($files as $media)
+                    {
+                        $image = $media->store($post->created_by.'/'.$post->id);
+                        $type = $media->getClientOriginalExtension();
+                        $imageArray=[
+                            'image_url'=>$image,
+                            'file_type'=>$type,
+                            'uploaded_by'=> $post->created_by,
+                            'post_id'=> $post->id,
+                        ];
+                        if(File::create($imageArray))
+                        {
+                            $i++;
+                        }
+                    }
+                    addInfo($i.' Files Saved');
+                }
+            }
+            return $response->displayWithResponse(true,$post,200);
         }catch (\Exception $err){
             Log::info($err->getMessage());
             return response()->json(["message"=>"Something went wrong"],500);
